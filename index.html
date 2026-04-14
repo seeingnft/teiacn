@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <base href="/" />
+    <meta charset="utf-8" />
+    <meta http-equiv="Content-Language" content="zh-CN" />
+
+    <!-- FAVICONS -->
+    <link
+      rel="apple-touch-icon"
+      sizes="180x180"
+      href="/icons/apple-touch-icon.png?v=1"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="/icons/favicon-32x32.png?v=1"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="16x16"
+      href="/icons/favicon-16x16.png?v=1"
+    />
+    <link rel="manifest" href="/icons/site.webmanifest?v=1" />
+    <link
+      rel="mask-icon"
+      href="/icons/safari-pinned-tab.svg?v=1"
+      color="#5bbad5"
+    />
+    <link rel="shortcut icon" href="/icons/favicon.ico?v=1" />
+    <link rel="preconnect" href="https://cache.teia.rocks" />
+    <link rel="preconnect" href="https://imgproxy.teia.rocks" />
+    <link rel="preconnect" href="https://lists.teia.art" />
+    <meta name="build-commit" content="<%=BUILD_COMMIT%>" />
+    <meta name="msapplication-TileColor" content="#ffc40d" />
+    <meta name="msapplication-config" content="/icons/browserconfig.xml?v=1" />
+    <meta name="theme-color" content="#ffffff" />
+
+    <!-- OPEN GRAPH -->
+    <meta
+      name="description"
+      content="Teia 中文画廊 - 探索 Tezos 区块链上的数字艺术作品，发现来自世界各地艺术家的创意作品。"
+    />
+    <meta property="og:title" content="Teia 中文画廊" />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="/teia_avatar.png" />
+    <meta property="og:description" content="探索 Tezos 区块链上的数字艺术作品" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Teia 中文画廊" />
+    <meta name="twitter:description" content="探索 Tezos 区块链上的数字艺术作品" />
+    <meta name="twitter:image" content="/teia_avatar.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Teia 中文画廊</title>
+  </head>
+
+  <body>
+    <noscript aria-hidden="true"
+      >You need to enable JavaScript to run this app.</noscript
+    >
+    <div id="root"></div>
+    <script type="module" src="/src/node_polyfill.js"></script>
+    <script type="module" src="/src/index.jsx"></script>
+  </body>
+</html>
