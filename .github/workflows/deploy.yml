@@ -3,6 +3,7 @@ name: Deploy to GitHub Pages
 on:
   push:
     branches: [main]
+  workflow_dispatch:
 
 permissions:
   contents: write
@@ -11,18 +12,34 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout teiacn (our modifications)
+        uses: actions/checkout@v3
+        with:
+          path: teiacn
+
+      - name: Clone base teia-ui
+        run: git clone --depth=1 https://github.com/teia-community/teia-ui.git teia-ui
+
+      - name: Apply our modifications on top of base
+        run: |
+          # Copy our modified source files over the base
+          cp -r teiacn/src/. teia-ui/src/
+          cp teiacn/vite.config.js teia-ui/vite.config.js
+          cp teiacn/index.html teia-ui/index.html
 
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
           node-version: '18'
           cache: 'npm'
+          cache-dependency-path: teia-ui/package-lock.json
 
       - name: Install dependencies
+        working-directory: teia-ui
         run: npm ci --legacy-peer-deps
 
       - name: Build
+        working-directory: teia-ui
         run: npm run build
         env:
           GH_BASE_URL: /teiacn/
@@ -31,5 +48,4 @@ jobs:
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./build
-          cname: ''
+          publish_dir: ./teia-ui/build
