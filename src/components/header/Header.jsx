@@ -1,19 +1,18 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState } from 'react'
 import { walletPreview } from '@utils/string'
+
 import { useLocation, useNavigate } from 'react-router'
+
 import { AnimatePresence } from 'framer-motion'
 import { Button } from '@atoms/button'
 import styles from '@style'
-import { DropDown, DropdownButton } from '@atoms/dropdown'
 import { Menu } from '../icons'
-import { EventIcon } from '@icons'
 import { MainMenu } from './main_menu/MainMenu'
 import { EventBanner } from '@components/banners'
 import RotatingLogo from '@atoms/logo'
-import { sample_events } from './sample_events'
+
 import { useMedia } from 'react-use'
-import EventCard from './events/EventCard'
 import { Line } from '@atoms/line'
 import { ConfigIcon } from '@icons'
 import classNames from 'classnames'
@@ -24,11 +23,28 @@ import { useModalStore } from '@context/modalStore'
 import { shallow } from 'zustand/shallow'
 
 export const Header = () => {
-  const [address, setAccount, proxyName, proxyAddress, userInfo, unsync, sync, resetProxy] =
-    useUserStore(
-      (st) => [st.address, st.setAccount, st.proxyName, st.proxyAddress, st.userInfo, st.unsync, st.sync, st.resetProxy],
-      shallow
-    )
+  const [
+    address,
+    setAccount,
+    proxyName,
+    proxyAddress,
+    userInfo,
+    unsync,
+    sync,
+    resetProxy,
+  ] = useUserStore(
+    (st) => [
+      st.address,
+      st.setAccount,
+      st.proxyName,
+      st.proxyAddress,
+      st.userInfo,
+      st.unsync,
+      st.sync,
+      st.resetProxy,
+    ],
+    shallow
+  )
   const [collapsed, setCollapsed, toggleMenu] = useModalStore(
     (st) => [st.collapsed, st.setCollapsed, st.toggleMenu],
     shallow
@@ -36,7 +52,9 @@ export const Header = () => {
 
   useEffect(() => {
     const applyTheme = useLocalSettings.getState().applyTheme
-    const unsub = useLocalSettings.subscribe((st) => st.theme, applyTheme, { fireImmediately: true })
+    const unsub = useLocalSettings.subscribe((st) => st.theme, applyTheme, {
+      fireImmediately: true,
+    })
     return unsub
   }, [])
 
@@ -50,10 +68,13 @@ export const Header = () => {
 
   const navigate = useNavigate()
   const location = useLocation()
+
   const isWide = useMedia('(min-width: 600px)')
+
   const [logoSeed, setLogoSeed] = useState()
   const [onHome, setOnHome] = useState()
-  const [syncLabel, setSyncLabel] = useState('同步')
+
+  const [syncLabel, setSyncLabel] = useState('\u540c\u6b65')
   const [walletLabel, setWalletLabel] = useState('')
   const [accountPreview, setAccountPreview] = useState('')
 
@@ -68,18 +89,24 @@ export const Header = () => {
 
   useEffect(() => {
     const updateTitle = ([address, proxyAddress, proxyName, userInfo]) => {
-      setSyncLabel(address ? '断开' : '同步')
+      setSyncLabel(address ? '\u65ad\u5f00' : '\u540c\u6b65')
       if (address) {
         if (collapsed) {
-          const proxy = proxyAddress ? ` (${proxyName || walletPreview(proxyAddress)})` : ''
+          const proxy = proxyAddress
+            ? ` (${proxyName || walletPreview(proxyAddress)})`
+            : ''
           const userName = userInfo?.name ? `(${userInfo.name})` : ''
           setWalletLabel(() => walletPreview(address) + (proxy || userName))
           setAccountPreview(() =>
-            syncLabel.slice(syncLabel.length - 5, syncLabel.length).split('').join(' ')
+            syncLabel
+              .slice(syncLabel.length - 5, syncLabel.length)
+              .split('')
+              .join(' ')
           )
         }
       }
     }
+
     return useUserStore.subscribe(
       (st) => [st.address, st.proxyAddress, st.proxyName, st.userInfo],
       updateTitle
@@ -96,8 +123,11 @@ export const Header = () => {
       if (collapsed) {
         const name = proxyName || userInfo?.name
         const current_address = proxyAddress || address
-        if (name) handleRoute(`/${name}`)
-        else handleRoute(`${PATH.ISSUER}/${current_address}`)
+        if (name) {
+          handleRoute(`/${name}`)
+        } else {
+          handleRoute(`${PATH.ISSUER}/${current_address}`)
+        }
       } else {
         unsync()
       }
@@ -106,7 +136,10 @@ export const Header = () => {
     }
   }
 
-  const container_classes = classNames({ [styles.grid]: true, [styles.fill_bg]: !collapsed })
+  const container_classes = classNames({
+    [styles.grid]: true,
+    [styles.fill_bg]: !collapsed,
+  })
 
   return (
     <>
@@ -114,43 +147,44 @@ export const Header = () => {
       <AnimatePresence>{!collapsed && <MainMenu />}</AnimatePresence>
       <header className={`${styles.container}`}>
         <div className={container_classes}>
-          <div className={styles.left}>
-            <DropdownButton
-              alt="events dropdown"
-              className={styles.events_button}
-              icon={<EventIcon />}
-              menuID="events"
-              label={isWide ? '活动' : ''}
-              id={`events-${location.pathname}`}
-            >
-              <DropDown menuID="events" vertical>
-                {sample_events?.map((evt) => (
-                  <EventCard event={evt} key={`${evt.title} - ${evt.subtitle}`} />
-                ))}
-              </DropDown>
-            </DropdownButton>
-          </div>
           <Button
             alt="teia logo"
             to={!onHome ? '/' : null}
-            onTo={() => { setCollapsed(true); setOnHome(onHome) }}
-            onClick={() => setLogoSeed(Math.random() * 100)}
+            onTo={() => {
+              setCollapsed(true)
+              setOnHome(onHome)
+            }}
+            onClick={() => {
+              setLogoSeed(Math.random() * 100)
+            }}
           >
             <RotatingLogo seed={logoSeed} className={styles.logo} />
           </Button>
           <div className={styles.right}>
             {!collapsed && (
               <>
-                <Button alt="local settings" to="/settings" onTo={() => setCollapsed(true)} className={styles.config_button}>
+                <Button
+                  alt={'local settings'}
+                  to="/settings"
+                  onTo={() => setCollapsed(true)}
+                  className={styles.config_button}
+                >
                   <ConfigIcon fill="var(--text-color)" width={16} height={16} />
-                  {isWide && '配置'}
+                  {isWide && '\u914d\u7f6e'}
                 </Button>
               </>
             )}
             {!collapsed && proxyAddress && (
               <>
                 <Line className={styles.separator} vertical />
-                <Button alt="exit collab" small onClick={() => resetProxy()} secondary>退出协作</Button>
+                <Button
+                  alt={'exit collab'}
+                  small
+                  onClick={() => resetProxy()}
+                  secondary
+                >
+                  \u9000\u51fa\u534f\u4f5c
+                </Button>
                 <Line className={styles.separator} vertical />
               </>
             )}
@@ -158,7 +192,15 @@ export const Header = () => {
               onClick={handleSyncUnsync}
               className={styles.sync_label}
               secondary
-              alt={!collapsed ? (accountPreview ? 'unsync' : 'sync') : (accountPreview ? `wallet account ending in ${accountPreview}` : 'sync wallet')}
+              alt={
+                !collapsed
+                  ? accountPreview
+                    ? 'unsync'
+                    : 'sync'
+                  : accountPreview
+                  ? `wallet account ending in ${accountPreview}`
+                  : 'sync wallet'
+              }
             >
               {!collapsed || !address ? (
                 <span key="synclabel">{syncLabel}</span>
@@ -166,7 +208,11 @@ export const Header = () => {
                 <span key="">{walletLabel}</span>
               )}
             </Button>
-            <Button alt={`${collapsed ? 'show' : 'hide'} menu`} onClick={toggleMenu} secondary>
+            <Button
+              alt={`${collapsed ? 'show' : 'hide'} menu`}
+              onClick={toggleMenu}
+              secondary
+            >
               <Menu isOpen={!collapsed} />
             </Button>
           </div>

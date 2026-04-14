@@ -8,11 +8,9 @@ import { useUserStore } from '@context/userStore'
 import { useModalStore } from '@context/modalStore'
 
 import { MenuItem } from './MenuItem'
-import { Toggle } from '@atoms/toggles'
 import { Line } from '@atoms/line'
 import { ThemeSelection } from '@atoms/select'
 import { shallow } from 'zustand/shallow'
-import { useLocalSettings } from '@context/localSettingsStore'
 
 const FOCUSABLE =
   'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"]), input, select, textarea'
@@ -22,7 +20,6 @@ export const MainMenu = () => {
     (st) => [st.address, st.proxyName, st.proxyAddress, st.userInfo],
     shallow
   )
-  const [zen, setZen] = useLocalSettings((st) => [st.zen, st.setZen])
   const setCollapsed = useModalStore((st) => st.setCollapsed)
 
   const menuRef = useRef(null)
@@ -56,9 +53,12 @@ export const MainMenu = () => {
     }
 
     document.addEventListener('keydown', handleKeyDown)
+
     return () => {
       document.removeEventListener('keydown', handleKeyDown)
-      if (previousFocusRef.current?.focus) previousFocusRef.current.focus()
+      if (previousFocusRef.current?.focus) {
+        previousFocusRef.current.focus()
+      }
     }
   }, [setCollapsed])
 
@@ -71,29 +71,33 @@ export const MainMenu = () => {
       className={`${styles.menu}`}
       role="dialog"
       aria-modal="true"
-      aria-label="主菜单"
+      aria-label="\u4e3b\u83dc\u5355"
       {...fadeIn()}
     >
       <nav className={`${styles.content}`}>
         <div className={`${styles.menu_left}`}>
-          <MenuItem className={styles.menu_label} route="search" label="搜索" />
-          <MenuItem className={styles.menu_label} route="text" label="文章" />
-          <MenuItem className={styles.menu_label} route="about" label="关于" />
-          <MenuItem className={styles.menu_label} label="入门指南" route="faq" />
+          <MenuItem className={styles.menu_label} route="search" label="\u641c\u7d22" />
+          <MenuItem className={styles.menu_label} route="text" label="\u6587\u7ae0" />
+          <MenuItem className={styles.menu_label} route="about" label="\u5173\u4e8e" />
+          <MenuItem className={styles.menu_label} label="\u5165\u95e8\u6307\u5357" route="faq" />
         </div>
         <Line className={styles.line} vertical />
         <div className={styles.menu_right}>
           <div className={styles.address}>{walletPreview(address)}</div>
           <MenuItem
             className={styles.menu_label}
-            label="个人主页"
+            label="\u4e2a\u4eba\u4e3b\u9875"
             route={`${currentName || 'tz/' + currentAddress}` || 'tz'}
             need_sync={!currentName || !currentAddress}
           />
-          <MenuItem className={styles.menu_label} label="设置" route="subjkt" need_sync />
-          <MenuItem className={styles.menu_label} label="捐赠" route="donate" />
+          <MenuItem
+            className={styles.menu_label}
+            label="\u8bbe\u7f6e"
+            route="subjkt"
+            need_sync
+          />
+          <MenuItem className={styles.menu_label} label="\u6350\u8d60" route="donate" />
           <div className={styles.state_buttons}>
-            <Toggle box label="禅模式" onToggle={setZen} toggled={zen} />
             <ThemeSelection className={styles.theme_selection} />
           </div>
         </div>
