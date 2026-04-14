@@ -1,21 +1,9 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
   <head>
-    <base href="/teiacn/" />
+    <base href="/" />
     <meta charset="utf-8" />
     <meta http-equiv="Content-Language" content="zh-CN" />
-    <script>
-      (function(l) {
-        if (l.search[1] === '/') {
-          var decoded = l.search.slice(1).split('&').map(function(s) {
-            return s.replace(/~and~/g, '&')
-          }).join('?');
-          window.history.replaceState(null, null,
-            l.pathname.slice(0, -1) + decoded + l.hash
-          );
-        }
-      }(window.location))
-    </script>
     <link rel="apple-touch-icon" sizes="180x180" href="/teiacn/icons/apple-touch-icon.png?v=1" />
     <link rel="icon" type="image/png" sizes="32x32" href="/teiacn/icons/favicon-32x32.png?v=1" />
     <link rel="icon" type="image/png" sizes="16x16" href="/teiacn/icons/favicon-16x16.png?v=1" />
@@ -25,25 +13,33 @@
     <link rel="preconnect" href="https://cache.teia.rocks" />
     <link rel="preconnect" href="https://imgproxy.teia.rocks" />
     <link rel="preconnect" href="https://lists.teia.art" />
+    <meta name="build-commit" content="f2bf0feae4910b5be10556b1f94ab1581600599d" />
     <meta name="msapplication-TileColor" content="#ffc40d" />
+    <meta name="msapplication-config" content="/icons/browserconfig.xml?v=1" />
     <meta name="theme-color" content="#ffffff" />
-    <meta name="description" content="Teia 中文画廊 - 探索 Tezos 区块链上的数字艺术作品" />
+    <meta name="description" content="Teia 中文画廊 - 探索 Tezos 区块链上的数字艺术作品，发现来自世界各地艺术家的创意作品。" />
     <meta property="og:title" content="Teia 中文画廊" />
     <meta property="og:type" content="website" />
+    <meta property="og:image" content="/teia_avatar.png" />
     <meta property="og:description" content="探索 Tezos 区块链上的数字艺术作品" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="Teia 中文画廊" />
     <meta name="twitter:description" content="探索 Tezos 区块链上的数字艺术作品" />
+    <meta name="twitter:image" content="/teia_avatar.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Teia 中文画廊</title>
-    <script type="module" crossorigin src="/teiacn/assets/index-638bf181.js"></script>
-    <link rel="modulepreload" crossorigin href="/teiacn/assets/contracts-8d41a9bc.js">
-    <link rel="modulepreload" crossorigin href="/teiacn/assets/pdf-11e2930b.js">
-    <link rel="modulepreload" crossorigin href="/teiacn/assets/ui-2bfc9b4b.js">
+    <script type="module" crossorigin src="/teiacn/assets/index-d529110c.js"></script>
+    <link rel="modulepreload" crossorigin href="/teiacn/assets/contracts-9e13cbc0.js">
+    <link rel="modulepreload" crossorigin href="/teiacn/assets/pdf-de1815b9.js">
+    <link rel="modulepreload" crossorigin href="/teiacn/assets/ui-c62832af.js">
+    <link rel="modulepreload" crossorigin href="/teiacn/assets/magenta-480b022c.js">
+    <link rel="modulepreload" crossorigin href="/teiacn/assets/midi-0a5f03ea.js">
     <link rel="stylesheet" href="/teiacn/assets/index-fa098b8e.css">
   </head>
   <body>
     <noscript aria-hidden="true">You need to enable JavaScript to run this app.</noscript>
     <div id="root"></div>
+    
+    
   </body>
 </html>
