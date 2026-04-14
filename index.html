@@ -5,36 +5,36 @@
     <meta http-equiv="Content-Language" content="zh-CN" />
     <link rel="apple-touch-icon" sizes="180x180" href="https://cdn.jsdelivr.net/gh/seeingnft/teiacn@gh-pages/icons/apple-touch-icon.png?v=1" />
     <link rel="icon" type="image/png" sizes="32x32" href="https://cdn.jsdelivr.net/gh/seeingnft/teiacn@gh-pages/icons/favicon-32x32.png?v=1" />
-    <link rel="icon" type="image/png" sizes="16x16" href="https://cdn.jsdelivr.net/gh/seeingnft/teiacn@gh-pages/icons/favicon-16x16.png?v=1" />
     <link rel="manifest" href="https://cdn.jsdelivr.net/gh/seeingnft/teiacn@gh-pages/icons/site.webmanifest?v=1" />
-    <link rel="mask-icon" href="https://cdn.jsdelivr.net/gh/seeingnft/teiacn@gh-pages/icons/safari-pinned-tab.svg?v=1" color="#5bbad5" />
     <link rel="shortcut icon" href="https://cdn.jsdelivr.net/gh/seeingnft/teiacn@gh-pages/icons/favicon.ico?v=1" />
-    <link rel="preconnect" href="https://cache.teia.rocks" />
-    <link rel="preconnect" href="https://imgproxy.teia.rocks" />
-    <link rel="preconnect" href="https://lists.teia.art" />
     <meta name="build-commit" content="f2bf0feae4910b5be10556b1f94ab1581600599d" />
-    <meta name="msapplication-TileColor" content="#ffc40d" />
-    <meta name="msapplication-config" content="/icons/browserconfig.xml?v=1" />
     <meta name="theme-color" content="#ffffff" />
-    <meta name="description" content="Teia 中文画廊 - 探索 Tezos 区块链上的数字艺术作品" />
+    <meta name="description" content="Teia 中文画廊" />
     <meta property="og:title" content="Teia 中文画廊" />
     <meta property="og:type" content="website" />
-    <meta property="og:image" content="/teia_avatar.png" />
-    <meta property="og:description" content="探索 Tezos 区块链上的数字艺术作品" />
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Teia 中文画廊" />
-    <meta name="twitter:description" content="探索 Tezos 区块链上的数字艺术作品" />
-    <meta name="twitter:image" content="/teia_avatar.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Teia 中文画廊</title>
     <script>
+      if (typeof globalThis.process === 'undefined') {
+        globalThis.process = { env: {}, browser: true };
+      }
+      if (!globalThis.process.hrtime) {
+        globalThis.process.hrtime = function(start) {
+          var now = performance.now() * 1e-3;
+          var sec = Math.floor(now);
+          var nano = Math.floor((now % 1) * 1e9);
+          if (start) { sec -= start[0]; nano -= start[1]; if (nano < 0) { sec--; nano += 1e9; } }
+          return [sec, nano];
+        };
+        globalThis.process.hrtime.bigint = function() { return BigInt(Math.floor(performance.now() * 1e6)); };
+      }
       window.addEventListener('error', function(e) {
         var d = document.getElementById('js-err');
-        if (d) d.innerHTML = '<b>错误:</b> ' + e.message + '<br/>' + (e.filename||'') + ':' + e.lineno;
+        if (d) d.innerHTML = '<b>错误:</b> ' + e.message + '<br>' + (e.filename||'').split('/assets/').pop() + ':' + e.lineno;
       });
       window.addEventListener('unhandledrejection', function(e) {
         var d = document.getElementById('js-err');
-        if (d) d.innerHTML = '<b>Promise 错误:</b> ' + (e.reason && e.reason.message || e.reason);
+        if (d) d.innerHTML = '<b>Promise错误:</b> ' + (e.reason && e.reason.message || String(e.reason));
       });
     </script>
     <script type="module" crossorigin src="https://cdn.jsdelivr.net/gh/seeingnft/teiacn@gh-pages/assets/index-10f61207.js"></script>
@@ -46,10 +46,8 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/seeingnft/teiacn@gh-pages/assets/index-94ebe0d4.css">
   </head>
   <body>
-    <noscript style="display:block;padding:20px;font-size:18px">请开启 JavaScript</noscript>
-    <div id="root">
-      <div id="js-err" style="padding:20px;font-family:sans-serif;color:#333">正在加载…</div>
-    </div>
+    <noscript style="display:block;padding:20px">请开启 JavaScript</noscript>
+    <div id="root"><div id="js-err" style="padding:20px;font-family:sans-serif">正在加载…</div></div>
     
     
   </body>
