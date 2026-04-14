@@ -48,8 +48,8 @@ const display_routes = (
   </>
 )
 
-// Strip trailing slash for React Router basename
-const basename = import.meta.env.BASE_URL.replace(/\/$/, '') || '/'
+// Always use /teiacn as the router basename (site is deployed at /teiacn/)
+const basename = '/teiacn'
 
 const router = createBrowserRouter(
   createRoutesFromElements(

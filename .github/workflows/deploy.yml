@@ -22,7 +22,6 @@ jobs:
 
       - name: Apply our modifications on top of base
         run: |
-          # Copy our modified source files over the base
           cp -r teiacn/src/. teia-ui/src/
           cp teiacn/vite.config.js teia-ui/vite.config.js
           cp teiacn/index.html teia-ui/index.html
@@ -42,7 +41,8 @@ jobs:
         working-directory: teia-ui
         run: npm run build
         env:
-          GH_BASE_URL: /teiacn/
+          # Use jsDelivr CDN as asset base for China accessibility
+          GH_BASE_URL: 'https://cdn.jsdelivr.net/gh/seeingnft/teiacn@gh-pages/'
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
