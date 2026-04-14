@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
   <head>
-    <base href="/" />
     <meta charset="utf-8" />
     <meta http-equiv="Content-Language" content="zh-CN" />
     <link rel="apple-touch-icon" sizes="180x180" href="/teiacn/icons/apple-touch-icon.png?v=1" />
@@ -28,6 +27,11 @@
     <meta name="twitter:image" content="/teia_avatar.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Teia 中文画廊</title>
+    <script>
+      window.onerror = function(msg, src, line, col, err) {
+        document.body.innerHTML = '<div style="padding:20px;font-family:sans-serif"><h2>加载错误</h2><pre>' + msg + '\n' + src + ':' + line + '</pre></div>';
+      };
+    </script>
     <script type="module" crossorigin src="/teiacn/assets/index-2d4c5824.js"></script>
     <link rel="modulepreload" crossorigin href="/teiacn/assets/contracts-9e13cbc0.js">
     <link rel="modulepreload" crossorigin href="/teiacn/assets/pdf-de1815b9.js">
@@ -37,7 +41,7 @@
     <link rel="stylesheet" href="/teiacn/assets/index-fa098b8e.css">
   </head>
   <body>
-    <noscript aria-hidden="true">You need to enable JavaScript to run this app.</noscript>
+    <noscript aria-hidden="true">请开启 JavaScript</noscript>
     <div id="root"></div>
     
     
