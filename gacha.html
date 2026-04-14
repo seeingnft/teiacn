@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Teia 神谕 · 今日抽签</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@300;400;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #09090f;
+      --surface: #11111b;
+      --border: #252535;
+      --gold: #c8a46e;
+      --gold-dim: #8a6d3b;
+      --text: #e8dfc8;
+      --dim: #666;
+      --dim2: #333;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Noto Serif SC', 'STSong', 'SimSun', serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding-bottom: 5rem;
+    }
+
+    /* ── Header ─────────────────────────── */
+    .hd { text-align: center; padding: 3.5rem 1rem 2.5rem; }
+    .hd-eye {
+      font-size: 0.68rem; letter-spacing: 0.4em;
+      color: var(--gold-dim); margin-bottom: 0.8rem;
+    }
+    .hd-title {
+      font-size: 2.2rem; font-weight: 300;
+      color: var(--gold); letter-spacing: 0.5em;
+      text-shadow: 0 0 40px rgba(200,164,110,0.2);
+    }
+    .hd-sub {
+      font-size: 0.75rem; color: var(--dim);
+      letter-spacing: 0.12em; margin-top: 0.7rem;
+    }
+
+    /* ── API Key ─────────────────────────── */
+    .api { width: 100%; max-width: 500px; padding: 0 1.5rem; margin-bottom: 2rem; }
+    .api-btn {
+      background: none; border: 1px solid var(--dim2); color: var(--dim);
+      padding: 0.3rem 0.8rem; border-radius: 3px; cursor: pointer;
+      font-size: 0.7rem; font-family: inherit; letter-spacing: 0.08em;
+      transition: border-color 0.2s, color 0.2s;
+    }
+    .api-btn:hover { border-color: var(--gold-dim); color: var(--gold-dim); }
+    .api-row { display: flex; gap: 0.5rem; margin-top: 0.5rem; }
+    .api-row input {
+      flex: 1; background: var(--surface); border: 1px solid var(--border);
+      color: var(--text); padding: 0.45rem 0.75rem; border-radius: 3px;
+      font-size: 0.8rem; font-family: inherit; outline: none;
+    }
+    .api-row input:focus { border-color: var(--gold-dim); }
+    .api-hint { font-size: 0.65rem; color: var(--dim); margin-top: 0.35rem; }
+
+    /* ── Draw Button ─────────────────────── */
+    .draw {
+      background: linear-gradient(135deg, #7a5c1e, #c8a46e 50%, #7a5c1e);
+      background-size: 200%; color: #09090f;
+      border: none; padding: 0.85rem 3.5rem;
+      font-size: 1.25rem; font-weight: 600; font-family: inherit;
+      letter-spacing: 0.6em; border-radius: 3px; cursor: pointer;
+      transition: background-position 0.4s, box-shadow 0.4s;
+      box-shadow: 0 0 25px rgba(200,164,110,0.12);
+      margin-bottom: 3rem;
+    }
+    .draw:hover:not(:disabled) {
+      background-position: 100%;
+      box-shadow: 0 0 45px rgba(200,164,110,0.28);
+    }
+    .draw:disabled { opacity: 0.4; cursor: not-allowed; }
+
+    /* ── Card Grid ───────────────────────── */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 12px;
+      max-width: 860px; width: 100%; padding: 0 1.5rem;
+    }
+    @media (max-width: 600px) {
+      .grid { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    /* ── Card Flip ───────────────────────── */
+    .cw { perspective: 900px; aspect-ratio: 2/3; }
+    .card {
+      width: 100%; height: 100%; position: relative;
+      transform-style: preserve-3d;
+      transition: transform 0.65s cubic-bezier(.4,0,.2,1);
+      border-radius: 6px;
+    }
+    .card.flipped { transform: rotateY(180deg); }
+    .cf, .cb {
+      position: absolute; inset: 0; border-radius: 6px;
+      backface-visibility: hidden; -webkit-backface-visibility: hidden;
+      overflow: hidden;
+    }
+    .cf {
+      background: radial-gradient(ellipse at 40% 30%, #181828, var(--bg));
+      border: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .cf-inner {
+      width: 55%; aspect-ratio: 1; border: 1px solid #2a2a40;
+      border-radius: 50%; display: flex; align-items: center;
+      justify-content: center; color: #2a2a40; font-size: 1.3rem;
+    }
+    .cb {
+      transform: rotateY(180deg);
+      background: var(--surface); border: 1px solid var(--border);
+      transition: border-color 0.3s, box-shadow 0.3s;
+    }
+    .card.flipped .cb {
+      border-color: rgba(200,164,110,0.35);
+      box-shadow: 0 0 18px rgba(200,164,110,0.08);
+    }
+    .cb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .cb-label {
+      position: absolute; bottom: 0; left: 0; right: 0;
+      background: linear-gradient(transparent, rgba(0,0,0,0.88) 55%);
+      padding: 1.4rem 0.45rem 0.4rem;
+      font-size: 0.58rem; color: rgba(232,223,200,0.65);
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .cb-num {
+      position: absolute; top: 0.3rem; left: 0.4rem;
+      font-size: 0.52rem; color: rgba(200,164,110,0.45);
+    }
+
+    /* ── Divider ─────────────────────────── */
+    hr.div {
+      max-width: 860px; width: calc(100% - 3rem);
+      border: none; border-top: 1px solid var(--border); margin: 2.5rem auto;
+    }
+
+    /* ── Oracle ──────────────────────────── */
+    .ow { max-width: 620px; width: 100%; padding: 0 1.5rem; }
+    .o-label {
+      font-size: 0.62rem; letter-spacing: 0.4em;
+      color: var(--gold-dim); text-align: center; margin-bottom: 1rem;
+    }
+    .o-box {
+      border: 1px solid var(--border); border-top: 1px solid var(--gold);
+      background: var(--surface); padding: 1.8rem 2rem; border-radius: 2px;
+    }
+    .o-text {
+      font-size: 0.9rem; line-height: 2.1; letter-spacing: 0.04em;
+      white-space: pre-wrap; color: var(--text); min-height: 2rem;
+    }
+    .cursor {
+      display: inline-block; width: 1px; height: 1em;
+      background: var(--gold); animation: blink 0.9s infinite;
+      vertical-align: text-bottom; margin-left: 1px;
+    }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+  </style>
+</head>
+<body>
+
+<div class="hd">
+  <div class="hd-eye">TEIA · 区块链神谕</div>
+  <div class="hd-title">今日抽签</div>
+  <div class="hd-sub">从虚空中召唤十件数字艺术，聆听命运低语</div>
+</div>
+
+<div class="api">
+  <button class="api-btn" onclick="toggleApi()">⚙ Claude API Key</button>
+  <div id="api-row" class="api-row" style="display:none">
+    <input type="password" id="api-key" placeholder="sk-ant-api03-…" autocomplete="off"
+           oninput="localStorage.setItem('teia_oracle_key',this.value)" />
+  </div>
+  <div id="api-hint" class="api-hint" style="display:none">仅存于本地浏览器 · 用于生成签文 · 不会上传</div>
+</div>
+
+<button class="draw" id="draw-btn" onclick="draw()">求　签</button>
+
+<div class="grid" id="grid"></div>
+
+<hr class="div" id="div" style="display:none" />
+<div class="ow" id="ow" style="display:none">
+  <div class="o-label">✦ 神 谕 ✦</div>
+  <div class="o-box">
+    <div class="o-text" id="o-text"></div>
+  </div>
+</div>
+
+<script>
+const CONTRACT = 'KT1RJ6PbjHpwc3M5rw5s2Nbmefwbuwbdxton'
+const GQL      = 'https://data.objkt.com/v3/graphql'
+const GW1      = 'https://ipfs.io/ipfs/'
+const GW2      = 'https://cloudflare-ipfs.com/ipfs/'
+const MIMES    = ['image/jpeg','image/png','image/gif','image/webp','image/svg+xml']
+
+// Restore saved API key
+const savedKey = localStorage.getItem('teia_oracle_key')
+if (savedKey) document.getElementById('api-key').value = savedKey
+
+let busy = false
+
+function toggleApi() {
+  const r = document.getElementById('api-row')
+  const h = document.getElementById('api-hint')
+  const show = r.style.display === 'none'
+  r.style.display = show ? 'flex' : 'none'
+  h.style.display = show ? 'block' : 'none'
+}
+
+function toHttp(uri, gw = GW1) {
+  if (!uri) return ''
+  return uri.startsWith('ipfs://') ? gw + uri.slice(7) : uri
+}
+
+async function fetchImages() {
+  const minId = Math.floor(Math.random() * 870000) + 1
+  const q = `{token(
+    where:{
+      fa_contract:{_eq:"${CONTRACT}"},
+      mime:{_in:${JSON.stringify(MIMES)}},
+      display_uri:{_is_null:false},
+      token_id:{_gte:${minId}}
+    },
+    order_by:{token_id:asc},
+    limit:10
+  ){token_id name description display_uri artifact_uri
+    creators{creator_address holder{alias name}}}}`
+  const r = await fetch(GQL, {
+    method: 'POST',
+    headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({query: q})
+  })
+  const {data} = await r.json()
+  return data?.token || []
+}
+
+function makeGrid(n) {
+  const grid = document.getElementById('grid')
+  grid.innerHTML = ''
+  return Array.from({length: n}, (_, i) => {
+    const w = document.createElement('div')
+    w.className = 'cw'
+    w.innerHTML = `<div class="card" id="c${i}">
+      <div class="cf"><div class="cf-inner">◈</div></div>
+      <div class="cb">
+        <span class="cb-num">#${String(i+1).padStart(2,'0')}</span>
+        <div class="cb-label">…</div>
+      </div></div>`
+    grid.appendChild(w)
+    return document.getElementById('c' + i)
+  })
+}
+
+async function draw() {
+  if (busy) return
+  busy = true
+  const btn = document.getElementById('draw-btn')
+  btn.disabled = true
+  btn.textContent = '卜卦中…'
+  document.getElementById('ow').style.display = 'none'
+  document.getElementById('div').style.display = 'none'
+
+  const cards = makeGrid(10)
+  let tokens = []
+  try {
+    tokens = await fetchImages()
+    if (tokens.length < 5) tokens = await fetchImages()
+  } catch(e) {
+    document.getElementById('grid').innerHTML =
+      `<p style="color:var(--dim);grid-column:1/-1;padding:1rem">加载失败：${e.message}</p>`
+    btn.textContent = '再求一签'; btn.disabled = false; busy = false
+    return
+  }
+
+  for (let i = 0; i < cards.length; i++) {
+    const t = tokens[i]
+    if (!t) continue
+    const cb = cards[i].querySelector('.cb')
+    const url = toHttp(t.display_uri) || toHttp(t.artifact_uri)
+    if (url) {
+      const img = document.createElement('img')
+      img.alt = t.name || ''
+      img.onerror = () => {
+        const alt = toHttp(t.display_uri, GW2) || toHttp(t.artifact_uri, GW2)
+        if (alt && img.src !== alt) img.src = alt
+      }
+      img.src = url
+      cb.prepend(img)
+    }
+    const alias = t.creators?.[0]?.holder?.alias || t.creators?.[0]?.holder?.name || ''
+    cb.querySelector('.cb-label').textContent =
+      (t.name || '无题') + (alias ? '  ·  ' + alias : '')
+    await new Promise(r => setTimeout(r, i * 180 + 60))
+    cards[i].classList.add('flipped')
+  }
+
+  await new Promise(r => setTimeout(r, 400))
+  btn.textContent = '再求一签'; btn.disabled = false; busy = false
+  await genOracle(tokens)
+}
+
+async function genOracle(tokens) {
+  const key = document.getElementById('api-key').value.trim()
+  document.getElementById('div').style.display = 'block'
+  const ow = document.getElementById('ow')
+  const el = document.getElementById('o-text')
+  ow.style.display = 'block'
+
+  if (!key) {
+    el.textContent = '（设置 Claude API Key 即可获得专属签文）'
+    return
+  }
+
+  const artworks = tokens.map((t, i) => {
+    const a = t.creators?.[0]?.holder?.alias || t.creators?.[0]?.holder?.name || '佚名'
+    const d = t.description ? '：' + t.description.replace(/\s+/g, ' ').slice(0, 60) : ''
+    return `${i+1}. 《${t.name || '无题'}》by ${a}${d}`
+  }).join('\n')
+
+  const prompt = `你是驻守区块链虚空的数字神谕，专为 Teia NFT 艺术平台的求签者解卦。
+
+用户此刻抽到了以下十件数字艺术作品：
+${artworks}
+
+请生成一则签文，格式如下：
+
+【第X签 · 卦名】
+签诗（五言或七言一句，押韵）——
+解签：两三句话，语气介于庙祝和互联网嘴替之间，诙谐中带玄机，自然提及至少一件具体作品。
+宜：今日一件适合的事（贴近当代生活，可搞笑）
+忌：今日一件不宜的事（同上）
+
+全程中文，150字以内。`
+
+  el.innerHTML = '<em style="color:var(--dim);font-style:normal;font-size:0.8rem">神谕降临中……</em>'
+
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'content-type': 'application/json',
+        'x-api-key': key,
+        'anthropic-version': '2023-06-01',
+        'anthropic-dangerous-client-side-allow-browser': 'true',
+      },
+      body: JSON.stringify({
+        model: 'claude-haiku-4-5-20251001',
+        max_tokens: 400,
+        stream: true,
+        messages: [{role: 'user', content: prompt}]
+      })
+    })
+
+    if (!res.ok) {
+      el.textContent = '神谕异常（' + res.status + '），请检查 API Key'
+      return
+    }
+
+    // Use text node + cursor for safe XSS-free rendering
+    el.innerHTML = ''
+    const tn = document.createTextNode('')
+    const cur = document.createElement('span')
+    cur.className = 'cursor'
+    el.appendChild(tn)
+    el.appendChild(cur)
+
+    const reader  = res.body.getReader()
+    const decoder = new TextDecoder()
+    let text = ''
+
+    while (true) {
+      const {done, value} = await reader.read()
+      if (done) break
+      const chunk = decoder.decode(value, {stream: true})
+      for (const line of chunk.split('\n')) {
+        if (!line.startsWith('data: ')) continue
+        const raw = line.slice(6).trim()
+        if (!raw || raw === '[DONE]') continue
+        try {
+          const ev = JSON.parse(raw)
+          if (ev.type === 'content_block_delta' && ev.delta?.type === 'text_delta') {
+            text += ev.delta.text
+            tn.textContent = text
+          }
+        } catch {}
+      }
+    }
+    cur.remove()
+  } catch(e) {
+    el.textContent = '求签失败：' + e.message
+  }
+}
+</script>
+</body>
+</html>
