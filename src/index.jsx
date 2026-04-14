@@ -48,6 +48,9 @@ const display_routes = (
   </>
 )
 
+// Strip trailing slash for React Router basename
+const basename = import.meta.env.BASE_URL.replace(/\/$/, '') || '/'
+
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path="*" errorElement={<RootErrorBoundary />} element={<App />}>
@@ -106,7 +109,8 @@ const router = createBrowserRouter(
       <Route path="tz/:address/*" element={<Display />}>{display_routes}</Route>
       <Route path=":name/*" element={<Display />}>{display_routes}</Route>
     </Route>
-  )
+  ),
+  { basename }
 )
 
 ReactDOM.createRoot(document.getElementById('root')).render(
