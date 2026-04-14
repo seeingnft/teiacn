@@ -16,7 +16,7 @@
     <meta name="msapplication-TileColor" content="#ffc40d" />
     <meta name="msapplication-config" content="/icons/browserconfig.xml?v=1" />
     <meta name="theme-color" content="#ffffff" />
-    <meta name="description" content="Teia 中文画廊 - 探索 Tezos 区块链上的数字艺术作品，发现来自世界各地艺术家的创意作品。" />
+    <meta name="description" content="Teia 中文画廊 - 探索 Tezos 区块链上的数字艺术作品" />
     <meta property="og:title" content="Teia 中文画廊" />
     <meta property="og:type" content="website" />
     <meta property="og:image" content="/teia_avatar.png" />
@@ -28,9 +28,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Teia 中文画廊</title>
     <script>
-      window.onerror = function(msg, src, line, col, err) {
-        document.body.innerHTML = '<div style="padding:20px;font-family:sans-serif"><h2>加载错误</h2><pre>' + msg + '\n' + src + ':' + line + '</pre></div>';
-      };
+      window.addEventListener('error', function(e) {
+        var d = document.getElementById('js-err');
+        if (d) d.innerHTML = '<b>错误:</b> ' + e.message + '<br/>' + (e.filename||'') + ':' + e.lineno;
+      });
+      window.addEventListener('unhandledrejection', function(e) {
+        var d = document.getElementById('js-err');
+        if (d) d.innerHTML = '<b>Promise 错误:</b> ' + (e.reason && e.reason.message || e.reason);
+      });
     </script>
     <script type="module" crossorigin src="/teiacn/assets/index-2d4c5824.js"></script>
     <link rel="modulepreload" crossorigin href="/teiacn/assets/contracts-9e13cbc0.js">
@@ -41,8 +46,10 @@
     <link rel="stylesheet" href="/teiacn/assets/index-fa098b8e.css">
   </head>
   <body>
-    <noscript aria-hidden="true">请开启 JavaScript</noscript>
-    <div id="root"></div>
+    <noscript style="display:block;padding:20px;font-size:18px">请开启 JavaScript</noscript>
+    <div id="root">
+      <div id="js-err" style="padding:20px;font-family:sans-serif;color:#333">正在加载…</div>
+    </div>
     
     
   </body>
